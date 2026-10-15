@@ -1,4 +1,511 @@
-<html>
-<head>Hello</head>
-<body>First Page on Web.</body>
-</html>j
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171817">
+  <title>Marvel Cinematic Universe · Story Timeline</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #171817;
+      --panel: #202220;
+      --panel-raised: #282b28;
+      --paper: #f1f0e9;
+      --muted: #aaa99e;
+      --line: #484b44;
+      --red: #ef493b;
+      --lime: #c9f36b;
+      --sky: #84d8d1;
+      --amber: #f4bf66;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    a { color: inherit; }
+
+    .masthead {
+      position: relative;
+      isolation: isolate;
+      min-height: 330px;
+      padding: 30px clamp(22px, 6vw, 92px) 42px;
+      overflow: hidden;
+      border-bottom: 1px solid #45463f;
+      background:
+        linear-gradient(90deg, rgba(23, 24, 23, .98) 0%, rgba(23, 24, 23, .91) 48%, rgba(23, 24, 23, .32) 100%),
+        linear-gradient(0deg, rgba(23, 24, 23, .84), transparent 60%),
+        url("https://image.tmdb.org/t/p/w1280/4ssDuvEDkSArWEdyBl2X5EHvYKU.jpg") center 36% / cover,
+        #30332d;
+    }
+
+    .masthead::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      right: 10%;
+      top: -230px;
+      width: 470px;
+      aspect-ratio: 1;
+      border: 1px solid rgba(201, 243, 107, .32);
+      border-radius: 50%;
+      box-shadow: 0 0 0 42px rgba(201, 243, 107, .035), 0 0 0 96px rgba(201, 243, 107, .025);
+    }
+
+    .topline, .hero-copy, .page-main, .footer-inner {
+      width: min(1120px, 100%);
+      margin-inline: auto;
+    }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .brand { color: var(--paper); }
+    .brand b { color: var(--red); }
+
+    .hero-copy { padding-top: 58px; }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--lime);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin: 0;
+      font-family: var(--serif);
+      font-size: clamp(42px, 7vw, 78px);
+      font-weight: 400;
+      line-height: .98;
+    }
+
+    .hero-note {
+      max-width: 520px;
+      margin: 18px 0 0;
+      color: #d0d0c7;
+      font-size: 15px;
+    }
+
+    .page-main { padding: 28px 0 70px; }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 34px;
+      padding: 0 20px;
+    }
+
+    .toolbar-label { color: var(--muted); font-size: 13px; }
+    .toolbar-label strong { color: var(--paper); font-weight: 600; }
+
+    .filters { display: flex; align-items: center; gap: 6px; }
+
+    .filters button {
+      min-height: 36px;
+      padding: 0 13px;
+      border: 1px solid #51534d;
+      border-radius: 2px;
+      background: transparent;
+      color: #cfcec5;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .filters button:hover, .filters button[aria-pressed="true"] {
+      border-color: var(--lime);
+      background: rgba(201, 243, 107, .1);
+      color: var(--lime);
+    }
+
+    button:focus-visible, a:focus-visible {
+      outline: 2px solid var(--lime);
+      outline-offset: 3px;
+    }
+
+    .timeline { position: relative; }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 20px;
+      left: 88px;
+      width: 1px;
+      background: linear-gradient(var(--red), #7f806c 55%, var(--sky));
+    }
+
+    .era {
+      display: grid;
+      grid-template-columns: 88px minmax(0, 1fr);
+      position: relative;
+      padding-bottom: 35px;
+    }
+
+    .era-marker {
+      position: relative;
+      padding: 8px 18px 0 0;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .era-marker::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      right: -4px;
+      width: 9px;
+      height: 9px;
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 1px var(--red);
+    }
+
+    .era-content { min-width: 0; padding-left: 30px; }
+
+    .era-heading {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin: 0 0 14px;
+      color: var(--paper);
+      font-family: var(--serif);
+      font-size: 25px;
+      font-weight: 400;
+    }
+
+    .era-heading span {
+      color: var(--muted);
+      font-family: var(--sans);
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .film-list { display: grid; gap: 7px; }
+
+    .film {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 14px;
+      min-height: 56px;
+      padding: 10px 15px;
+      border: 1px solid #393c37;
+      border-left: 2px solid #777a6d;
+      background: var(--panel);
+      transition: border-color .18s ease, background .18s ease, transform .18s ease;
+      animation: reveal .4s both;
+    }
+
+    .film:hover {
+      transform: translateX(3px);
+      border-color: #74776d;
+      border-left-color: var(--lime);
+      background: var(--panel-raised);
+    }
+
+    .film-title { font-size: 14px; font-weight: 600; }
+    .film-release { margin-left: 6px; color: #aaa99e; font-size: 12px; font-weight: 400; }
+
+    .film-tag {
+      padding: 3px 7px;
+      border: 1px solid #4b4d45;
+      color: #c6c5ba;
+      font-size: 9px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .branch {
+      position: relative;
+      margin: 14px 0 0 26px;
+      padding: 15px 0 0 20px;
+      border-left: 1px dashed #718c59;
+    }
+
+    .branch::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 13px;
+      border-top: 1px dashed #718c59;
+    }
+
+    .branch-heading {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 10px;
+      color: var(--lime);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .branch-heading span { color: var(--muted); font-weight: 400; letter-spacing: 0; text-transform: none; }
+
+    [hidden] { display: none !important; }
+
+    .footnote {
+      margin: 0 20px;
+      padding: 17px 0 0;
+      border-top: 1px solid #41433d;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .footnote b { color: var(--paper); font-weight: 600; }
+
+    footer {
+      padding: 20px;
+      border-top: 1px solid #393b36;
+      color: #898a81;
+      font-size: 11px;
+    }
+
+    .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
+
+    @keyframes reveal {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 640px) {
+      .masthead { min-height: 340px; padding-inline: 20px; background-position: 58% center; }
+      .hero-copy { padding-top: 67px; }
+      .topline { font-size: 9px; }
+      .page-main { padding-top: 22px; }
+      .toolbar { align-items: flex-start; padding-inline: 14px; }
+      .filters { width: 100%; }
+      .filters button { flex: 1; padding-inline: 8px; }
+      .timeline::before { left: 59px; }
+      .era { grid-template-columns: 59px minmax(0, 1fr); }
+      .era-marker { padding-right: 11px; font-size: 8px; }
+      .era-marker::after { right: -4px; }
+      .era-content { padding-left: 19px; }
+      .era-heading { flex-wrap: wrap; font-size: 22px; }
+      .film { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 10px 11px; }
+      .film-tag { justify-self: start; }
+      .branch { margin-left: 12px; padding-left: 13px; }
+      .footnote { margin-inline: 14px; }
+      .footer-inner { flex-direction: column; gap: 4px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="topline">
+      <div class="brand"><b>MARVEL</b> STUDIOS / FIELD GUIDE</div>
+      <div>Earth-616 · Story order</div>
+    </div>
+    <div class="hero-copy">
+      <p class="eyebrow">A living timeline · 2008—2026</p>
+      <h1>The stories,<br>in their own time.</h1>
+      <p class="hero-note">Every released Marvel Studios feature, arranged by when its story happens. Follow the main timeline, then take a detour through the branches.</p>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="toolbar" aria-label="Timeline controls">
+      <div class="toolbar-label"><strong id="film-count">38 films</strong> <span>· story chronology</span></div>
+      <div class="filters" role="group" aria-label="Filter timeline">
+        <button type="button" data-filter="all" aria-pressed="true">All paths</button>
+        <button type="button" data-filter="616" aria-pressed="false">Earth-616</button>
+        <button type="button" data-filter="branches" aria-pressed="false">Branches</button>
+      </div>
+    </section>
+
+    <section class="timeline" aria-label="Marvel movie story timeline">
+      <section class="era" data-era="616">
+        <div class="era-marker">1940s</div>
+        <div class="era-content">
+          <h2 class="era-heading">The first Avenger <span>1943–1945</span></h2>
+          <div class="film-list">
+            <article class="film"><div class="film-title">Captain America: The First Avenger <span class="film-release">(2011)</span></div><span class="film-tag">Earth-616</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="era" data-era="616">
+        <div class="era-marker">1990s</div>
+        <div class="era-content">
+          <h2 class="era-heading">Before the team <span>1995</span></h2>
+          <div class="film-list">
+            <article class="film"><div class="film-title">Captain Marvel <span class="film-release">(2019)</span></div><span class="film-tag">Earth-616</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="era" data-era="616">
+        <div class="era-marker">2000s</div>
+        <div class="era-content">
+          <h2 class="era-heading">The age of Iron Man <span>2008–2012</span></h2>
+          <div class="film-list">
+            <article class="film"><div class="film-title">Iron Man <span class="film-release">(2008)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Iron Man 2 <span class="film-release">(2010)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">The Incredible Hulk <span class="film-release">(2008)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Thor <span class="film-release">(2011)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">The Avengers <span class="film-release">(2012)</span></div><span class="film-tag">Earth-616</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="era" data-era="616">
+        <div class="era-marker">2013—15</div>
+        <div class="era-content">
+          <h2 class="era-heading">After New York <span>2013–2015</span></h2>
+          <div class="film-list">
+            <article class="film"><div class="film-title">Iron Man 3 <span class="film-release">(2013)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Thor: The Dark World <span class="film-release">(2013)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Captain America: The Winter Soldier <span class="film-release">(2014)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Guardians of the Galaxy <span class="film-release">(2014)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Guardians of the Galaxy Vol. 2 <span class="film-release">(2017)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Avengers: Age of Ultron <span class="film-release">(2015)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Ant-Man <span class="film-release">(2015)</span></div><span class="film-tag">Earth-616</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="era" data-era="616">
+        <div class="era-marker">2016—17</div>
+        <div class="era-content">
+          <h2 class="era-heading">Fractures &amp; new worlds <span>2016–2017</span></h2>
+          <div class="film-list">
+            <article class="film"><div class="film-title">Captain America: Civil War <span class="film-release">(2016)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Black Widow <span class="film-release">(2021)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Black Panther <span class="film-release">(2018)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Spider-Man: Homecoming <span class="film-release">(2017)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Doctor Strange <span class="film-release">(2016–17)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Thor: Ragnarok <span class="film-release">(2017)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Ant-Man and the Wasp <span class="film-release">(2018)</span></div><span class="film-tag">Earth-616</span></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="era" data-era="616">
+        <div class="era-marker">2018—23</div>
+        <div class="era-content">
+          <h2 class="era-heading">The Blip &amp; beyond <span>2018–2028</span></h2>
+          <div class="film-list">
+            <article class="film"><div class="film-title">Avengers: Infinity War <span class="film-release">(2018)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Avengers: Endgame <span class="film-release">(2018–2023)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Shang-Chi and the Legend of the Ten Rings <span class="film-release">(2021)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Eternals <span class="film-release">(2021)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Spider-Man: Far From Home <span class="film-release">(2024)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Spider-Man: No Way Home <span class="film-release">(2024)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Doctor Strange in the Multiverse of Madness <span class="film-release">(2025)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Thor: Love and Thunder <span class="film-release">(2025)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Black Panther: Wakanda Forever <span class="film-release">(2025)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Ant-Man and the Wasp: Quantumania <span class="film-release">(2026)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Guardians of the Galaxy Vol. 3 <span class="film-release">(2026)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">The Marvels <span class="film-release">(2026)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Captain America: Brave New World <span class="film-release">(2027)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Thunderbolts* <span class="film-release">(2027)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Spider-Man: Brand New Day <span class="film-release">(2026)</span></div><span class="film-tag">Earth-616</span></article>
+          </div>
+          <div class="branch" data-era="branch">
+            <h3 class="branch-heading">TVA branch <span>events outside linear time</span></h3>
+            <div class="film-list">
+              <article class="film"><div class="film-title">Deadpool &amp; Wolverine <span class="film-release">(2024)</span></div><span class="film-tag">Multiverse</span></article>
+            </div>
+          </div>
+          <div class="branch" data-era="branch">
+            <h3 class="branch-heading">Earth-828 <span>alternate universe · 1960s</span></h3>
+            <div class="film-list">
+              <article class="film"><div class="film-title">The Fantastic Four: First Steps <span class="film-release">(2025)</span></div><span class="film-tag">Earth-828</span></article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <p class="footnote"><b>Timeline note</b> Story years follow on-screen dialogue and Marvel’s published chronology where available. Some overlapping events are approximate; the two multiverse stories sit off the Earth-616 trunk.</p>
+  </main>
+
+  <footer>
+    <div class="footer-inner"><span>MARVEL CINEMATIC UNIVERSE · FEATURE FILMS</span><span>Chronology through 2026</span></div>
+  </footer>
+
+  <script>
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const eras = document.querySelectorAll(".era");
+    const count = document.querySelector("#film-count");
+
+    function setFilter(filter) {
+      let visibleFilms = 0;
+
+      filterButtons.forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.filter === filter));
+      });
+
+      eras.forEach((era) => {
+        const mainPath = era.dataset.era === "616";
+        const branches = era.querySelectorAll(".branch");
+        const showMain = filter !== "branches";
+        let eraVisible = showMain;
+
+        era.querySelectorAll(":scope > .era-content > .film-list > .film").forEach((film) => {
+          film.hidden = !showMain;
+          if (showMain) visibleFilms += 1;
+        });
+
+        branches.forEach((branch) => {
+          const showBranch = filter !== "616";
+          branch.hidden = !showBranch;
+          if (showBranch) {
+            visibleFilms += branch.querySelectorAll(".film").length;
+            eraVisible = true;
+          }
+        });
+
+        era.hidden = !eraVisible || (!mainPath && filter === "616");
+      });
+
+      count.textContent = `${visibleFilms} ${visibleFilms === 1 ? "film" : "films"}`;
+    }
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => setFilter(button.dataset.filter));
+    });
+  </script>
+</body>
+</html>
