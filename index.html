@@ -109,6 +109,22 @@
       font-size: 15px;
     }
 
+    .tour-start {
+      min-height: 42px;
+      margin-top: 20px;
+      padding: 0 15px;
+      border: 1px solid var(--lime);
+      border-radius: 2px;
+      background: var(--lime);
+      color: var(--ink);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .tour-start:hover { background: #dcff9b; }
+
     .page-main { padding: 28px 0 70px; }
 
     .toolbar {
@@ -300,6 +316,72 @@
 
     .footer-inner { display: flex; justify-content: space-between; gap: 20px; }
 
+    .tour-panel {
+      position: fixed;
+      z-index: 10;
+      right: clamp(12px, 4vw, 40px);
+      bottom: 20px;
+      width: min(390px, calc(100vw - 24px));
+      padding: 17px;
+      border: 1px solid var(--lime);
+      background: #20231f;
+      box-shadow: 0 12px 42px rgba(0, 0, 0, .52);
+    }
+
+    .tour-panel[hidden] { display: none; }
+
+    .tour-panel-top, .tour-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tour-label, .tour-step-count {
+      margin: 0;
+      color: var(--lime);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    .tour-step-count { color: var(--muted); letter-spacing: .04em; }
+
+    .tour-close, .tour-controls button {
+      min-height: 36px;
+      padding: 0 11px;
+      border: 1px solid #51534d;
+      border-radius: 2px;
+      background: transparent;
+      color: var(--paper);
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .tour-close:hover, .tour-controls button:hover:not(:disabled) {
+      border-color: var(--lime);
+      color: var(--lime);
+    }
+
+    .tour-controls button:disabled { opacity: .45; cursor: not-allowed; }
+
+    .tour-title {
+      margin: 14px 0 5px;
+      font-family: var(--serif);
+      font-size: 23px;
+      font-weight: 400;
+    }
+
+    .tour-copy { margin: 0 0 16px; color: #d0d0c7; font-size: 13px; }
+
+    .tour-controls { justify-content: flex-end; }
+    .tour-controls button:last-child { border-color: var(--lime); background: var(--lime); color: var(--ink); font-weight: 700; }
+    .tour-controls button:last-child:hover { background: #dcff9b; color: var(--ink); }
+
+    .tour-highlight { outline: 2px solid var(--lime); outline-offset: 6px; }
+
     @keyframes reveal {
       from { opacity: 0; transform: translateY(5px); }
       to { opacity: 1; transform: translateY(0); }
@@ -324,6 +406,7 @@
       .branch { margin-left: 12px; padding-left: 13px; }
       .footnote { margin-inline: 14px; }
       .footer-inner { flex-direction: column; gap: 4px; }
+      .tour-panel { right: 12px; bottom: 12px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -339,28 +422,45 @@
     </div>
     <div class="hero-copy">
       <p class="eyebrow">A living timeline · 2008—2026</p>
-      <h1>The stories,<br>in their own time.</h1>
-      <p class="hero-note">Every released Marvel Studios feature, arranged by when its story happens. Follow the main timeline, then take a detour through the branches.</p>
+      <h1>Sneha, your story<br>starts here.</h1>
+      <p class="hero-note">Welcome to the MCU timeline. Akhil will guide you through the stories, the eras, and a few alternate paths.</p>
+      <button class="tour-start" id="start-tour" type="button" aria-expanded="false" aria-controls="tour-panel">Start Akhil's tour</button>
     </div>
   </header>
 
   <main class="page-main">
     <section class="toolbar" aria-label="Timeline controls">
       <div class="toolbar-label"><strong id="film-count">38 films</strong> <span>· story chronology</span></div>
-      <div class="filters" role="group" aria-label="Filter timeline">
+      <div class="filters" role="group" aria-label="Filter timeline" data-tour-target="filters">
         <button type="button" data-filter="all" aria-pressed="true">All paths</button>
         <button type="button" data-filter="616" aria-pressed="false">Earth-616</button>
         <button type="button" data-filter="branches" aria-pressed="false">Branches</button>
       </div>
     </section>
 
+    <aside class="tour-panel" id="tour-panel" aria-label="Akhil's guided tour for Sneha" hidden>
+      <div class="tour-panel-top">
+        <p class="tour-label">Akhil's guide for Sneha</p>
+        <button class="tour-close" id="tour-close" type="button">Close tour</button>
+      </div>
+      <div aria-live="polite" aria-atomic="true">
+        <p class="tour-step-count" id="tour-step-count"></p>
+        <h2 class="tour-title" id="tour-title"></h2>
+        <p class="tour-copy" id="tour-copy"></p>
+      </div>
+      <div class="tour-controls">
+        <button id="tour-back" type="button" disabled>Back</button>
+        <button id="tour-next" type="button">Next</button>
+      </div>
+    </aside>
+
     <section class="timeline" aria-label="Marvel movie story timeline">
-      <section class="era" data-era="616">
+      <section class="era" data-era="616" data-tour-target="beginning">
         <div class="era-marker">1940s</div>
         <div class="era-content">
           <h2 class="era-heading">The first Avenger <span>1943–1945</span></h2>
           <div class="film-list">
-            <article class="film"><div class="film-title">Captain America: The First Avenger <span class="film-release">(2011)</span></div><span class="film-tag">Earth-616</span></article>
+            <article class="film"><div class="film-title">Captain America: The First Avenger <span class="film-release" data-tour-target="release">(2011)</span></div><span class="film-tag">Earth-616</span></article>
           </div>
         </div>
       </section>
@@ -442,7 +542,7 @@
             <article class="film"><div class="film-title">Thunderbolts* <span class="film-release">(2027)</span></div><span class="film-tag">Earth-616</span></article>
             <article class="film"><div class="film-title">Spider-Man: Brand New Day <span class="film-release">(2026)</span></div><span class="film-tag">Earth-616</span></article>
           </div>
-          <div class="branch" data-era="branch">
+          <div class="branch" data-era="branch" data-tour-target="branch">
             <h3 class="branch-heading">TVA branch <span>events outside linear time</span></h3>
             <div class="film-list">
               <article class="film"><div class="film-title">Deadpool &amp; Wolverine <span class="film-release">(2024)</span></div><span class="film-tag">Multiverse</span></article>
@@ -505,6 +605,100 @@
 
     filterButtons.forEach((button) => {
       button.addEventListener("click", () => setFilter(button.dataset.filter));
+    });
+
+    const startTourButton = document.querySelector("#start-tour");
+    const tourPanel = document.querySelector("#tour-panel");
+    const tourStepCount = document.querySelector("#tour-step-count");
+    const tourTitle = document.querySelector("#tour-title");
+    const tourCopy = document.querySelector("#tour-copy");
+    const tourBackButton = document.querySelector("#tour-back");
+    const tourNextButton = document.querySelector("#tour-next");
+    const tourCloseButton = document.querySelector("#tour-close");
+    const tourSteps = [
+      {
+        target: "beginning",
+        title: "Start at the beginning",
+        copy: "Sneha, follow the timeline downward. The stories are arranged by when they happen, starting with the earliest chapter."
+      },
+      {
+        target: "release",
+        title: "Story time, release time",
+        copy: "The era headings show when events happen in the MCU. The year in parentheses is when each movie was released."
+      },
+      {
+        target: "filters",
+        title: "Choose your path",
+        copy: "Use these filters to see the full collection, just Earth-616, or the stories that branch into other universes."
+      },
+      {
+        target: "branch",
+        title: "A detour through the multiverse",
+        copy: "These dashed paths mark stories outside the main timeline, including the TVA and the Fantastic Four's Earth-828."
+      }
+    ];
+    let activeTourStep = 0;
+
+    function clearTourHighlight() {
+      document.querySelectorAll(".tour-highlight").forEach((element) => {
+        element.classList.remove("tour-highlight");
+      });
+    }
+
+    function renderTourStep() {
+      const step = tourSteps[activeTourStep];
+      const target = document.querySelector(`[data-tour-target="${step.target}"]`);
+
+      clearTourHighlight();
+      target.classList.add("tour-highlight");
+      tourStepCount.textContent = `Step ${activeTourStep + 1} of ${tourSteps.length}`;
+      tourTitle.textContent = step.title;
+      tourCopy.textContent = step.copy;
+      tourBackButton.disabled = activeTourStep === 0;
+      tourNextButton.textContent = activeTourStep === tourSteps.length - 1 ? "Finish tour" : "Next";
+      target.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+        block: "center"
+      });
+    }
+
+    function closeTour() {
+      tourPanel.hidden = true;
+      startTourButton.setAttribute("aria-expanded", "false");
+      clearTourHighlight();
+      startTourButton.focus({ preventScroll: true });
+    }
+
+    startTourButton.addEventListener("click", () => {
+      setFilter("all");
+      activeTourStep = 0;
+      tourPanel.hidden = false;
+      startTourButton.setAttribute("aria-expanded", "true");
+      renderTourStep();
+      tourNextButton.focus({ preventScroll: true });
+    });
+
+    tourBackButton.addEventListener("click", () => {
+      if (activeTourStep > 0) {
+        activeTourStep -= 1;
+        renderTourStep();
+      }
+    });
+
+    tourNextButton.addEventListener("click", () => {
+      if (activeTourStep === tourSteps.length - 1) {
+        closeTour();
+        return;
+      }
+
+      activeTourStep += 1;
+      renderTourStep();
+    });
+
+    tourCloseButton.addEventListener("click", closeTour);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && !tourPanel.hidden) closeTour();
     });
   </script>
 </body>
