@@ -149,6 +149,9 @@ const allFilms = eras.flatMap((era) => [
     })),
   ),
 ]);
+const filmsBeforeDoomsday = allFilms.filter(
+  (film) => film.id !== filmId("Avengers: Doomsday"),
+);
 
 function readCompletedFilms() {
   try {
@@ -239,9 +242,20 @@ function App() {
   const [activeFilter, setActiveFilter] = useState("all");
   const [tourOpen, setTourOpen] = useState(false);
   const [activeTourStep, setActiveTourStep] = useState(0);
+  const [daysUntilDoomsday, setDaysUntilDoomsday] = useState(() =>
+    Math.max(0, Math.ceil((countdownTarget - Date.now()) / 86_400_000)),
+  );
   const startTourRef = useRef(null);
 
   const nextFilm = allFilms.find((film) => !completed.has(film.id));
+  const completedBeforeDoomsday = filmsBeforeDoomsday.filter((film) =>
+    completed.has(film.id),
+  ).length;
+  const moviesRemaining = filmsBeforeDoomsday.length - completedBeforeDoomsday;
+  const requiredMoviesPerWeek =
+    daysUntilDoomsday > 0
+      ? Math.ceil((moviesRemaining * 7) / daysUntilDoomsday)
+      : 0;
   const visibleFilms = allFilms.filter((film) => {
     if (activeFilter === "616") return film.tag === "Earth-616";
     if (activeFilter === "branches") return film.tag !== "Earth-616";
@@ -257,6 +271,16 @@ function App() {
       setStorageError("Progress could not be saved in this browser. It will be kept for this visit only.");
     }
   }, [completed, storageError]);
+
+  useEffect(() => {
+    const updateDaysRemaining = () => {
+      setDaysUntilDoomsday(
+        Math.max(0, Math.ceil((countdownTarget - Date.now()) / 86_400_000)),
+      );
+    };
+    const interval = window.setInterval(updateDaysRemaining, 60 * 60 * 1000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!tourOpen) return undefined;
@@ -381,6 +405,82 @@ function App() {
           )}
         </section>
         {storageError && <p className="storage-notice" role="status">{storageError}</p>}
+
+        <section className="watch-planner" aria-labelledby="watch-planner-title" aria-live="polite">
+          <div className="watch-planner-heading">
+            <div>
+              <p className="next-film-label">Your Doomsday watch plan</p>
+              <h2 id="watch-planner-title">
+                {moviesRemaining === 0
+                  ? "You’re caught up."
+                  : daysUntilDoomsday > 0
+                    ? `${moviesRemaining} ${moviesRemaining === 1 ? "movie" : "movies"} left before Doomsday`
+                    : `${moviesRemaining} ${moviesRemaining === 1 ? "movie" : "movies"} still unmarked`}
+              </h2>
+              <p className="watch-planner-note">
+                {filmsBeforeDoomsday.length} movies in the plan, including multiverse branches; Doomsday itself is excluded.
+              </p>
+            </div>
+          </div>
+
+          <div
+            className="watch-progress"
+            role="progressbar"
+            aria-label="Movies completed before Doomsday"
+            aria-valuemin="0"
+            aria-valuemax={filmsBeforeDoomsday.length}
+            aria-valuenow={completedBeforeDoomsday}
+          >
+            <span
+              className="watch-progress-fill"
+              style={{
+                width: `${filmsBeforeDoomsday.length
+                  ? (completedBeforeDoomsday / filmsBeforeDoomsday.length) * 100
+                  : 0}%`,
+              }}
+            />
+          </div>
+
+          <div className="watch-stats">
+            <div className="watch-stat">
+              <span className="watch-stat-value">{completedBeforeDoomsday}/{filmsBeforeDoomsday.length}</span>
+              <span className="watch-stat-label">completed</span>
+            </div>
+            <div className="watch-stat">
+              <span className="watch-stat-value">{daysUntilDoomsday}</span>
+              <span className="watch-stat-label">days left</span>
+            </div>
+            <div className="watch-stat watch-stat-recommended">
+              <span className="watch-stat-value">
+                {moviesRemaining === 0 ? "0" : daysUntilDoomsday > 0 ? requiredMoviesPerWeek : "—"}
+              </span>
+              <span className="watch-stat-label">
+                {moviesRemaining === 0
+                  ? "movies per week needed"
+                  : daysUntilDoomsday > 0
+                    ? `movies per week to finish by Dec 18`
+                    : "Doomsday release date reached"}
+              </span>
+            </div>
+          </div>
+
+          {moviesRemaining > 0 && (
+            <div className="watch-schedules" aria-label="Possible watch schedules">
+              {[1, 2, 3].map((moviesPerWeek) => (
+                <div
+                  className={`watch-schedule${requiredMoviesPerWeek === moviesPerWeek ? " watch-schedule-recommended" : ""}`}
+                  key={moviesPerWeek}
+                >
+                  <span>{moviesPerWeek} {moviesPerWeek === 1 ? "movie" : "movies"} / week</span>
+                  <strong>{Math.ceil(moviesRemaining / moviesPerWeek)} {Math.ceil(moviesRemaining / moviesPerWeek) === 1 ? "week" : "weeks"}</strong>
+                </div>
+              ))}
+            </div>
+          )}
+          <p className="watch-planner-footnote">
+            Based on the movies you’ve marked complete on this device. The weekly target is rounded up to a whole movie.
+          </p>
+        </section>
 
         <section className="timeline" aria-label="Marvel movie story timeline">
           {eras.map((era, eraIndex) => {

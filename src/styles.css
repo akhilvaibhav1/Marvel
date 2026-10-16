@@ -386,6 +386,86 @@
       font-size: 12px;
     }
 
+    .watch-planner {
+      margin: 0 20px 34px;
+      padding: 18px;
+      border: 1px solid #393c37;
+      background: var(--panel);
+    }
+
+    .watch-planner h2 {
+      margin: 0;
+      font-family: var(--serif);
+      font-size: 22px;
+      font-weight: 400;
+    }
+
+    .watch-planner-note,
+    .watch-planner-footnote {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .watch-progress {
+      height: 5px;
+      margin-top: 16px;
+      overflow: hidden;
+      background: #393c37;
+    }
+
+    .watch-progress-fill {
+      display: block;
+      height: 100%;
+      background: var(--lime);
+      transition: width .2s ease;
+    }
+
+    .watch-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: 15px;
+      border: 1px solid #393c37;
+    }
+
+    .watch-stat {
+      display: flex;
+      min-height: 70px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
+      padding: 10px 13px;
+    }
+
+    .watch-stat + .watch-stat { border-left: 1px solid #393c37; }
+    .watch-stat-value { color: var(--paper); font-size: 20px; font-weight: 600; }
+    .watch-stat-label { color: var(--muted); font-size: 10px; }
+    .watch-stat-recommended .watch-stat-value { color: var(--lime); }
+
+    .watch-schedules {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .watch-schedule {
+      display: flex;
+      min-height: 43px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid #393c37;
+      color: var(--muted);
+      font-size: 10px;
+    }
+
+    .watch-schedule strong { color: var(--paper); font-size: 11px; }
+    .watch-schedule-recommended { border-color: #718c59; background: rgba(201, 243, 107, .06); }
+    .watch-schedule-recommended strong { color: var(--lime); }
+    .watch-planner-footnote { margin-top: 10px; }
+
     footer {
       padding: 20px;
       border-top: 1px solid #393b36;
@@ -489,6 +569,11 @@
       .footnote { margin-inline: 14px; }
       .next-film { align-items: flex-start; flex-direction: column; margin-inline: 14px; }
       .storage-notice { margin-inline: 14px; }
+      .watch-planner { margin-inline: 14px; padding: 14px; }
+      .watch-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .watch-stat-recommended { grid-column: 1 / -1; border-top: 1px solid #393c37; }
+      .watch-stat + .watch-stat { border-left: 1px solid #393c37; }
+      .watch-schedules { grid-template-columns: 1fr; }
       .footer-inner { flex-direction: column; gap: 4px; }
       .tour-panel { right: 12px; bottom: 12px; }
     }
